@@ -9,25 +9,49 @@
 </div>
 
 @if($source == 'ws-ratchet')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const conn = new window.ab.Session('ws://localhost:8080',
-            function () {
-                conn.subscribe('progress-updates:user:{{ Auth::user()->id }}', function (topic, data) {
-                    let completed = document.querySelector('.amount-complete');
-                    completed.style.width = `${data.progress}%`;
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const conn = new window.ab.Session('ws://localhost:8080',
+                function () {
+                    conn.subscribe('progress-updates:user:{{ Auth::user()->id }}', function (topic, data) {
+                        let completed = document.querySelector('.amount-complete');
+                        completed.style.width = `${data.progress}%`;
 
-                    console.log({
-                        topic: topic,
-                        data: data
+                        console.log({
+                            topic: topic,
+                            data: data
+                        });
                     });
-                });
-            },
-            function () {
-                console.warn('WebSocket connection closed');
-            },
-            {'skipSubprotocolCheck': true}
-        );
-    });
-</script>
+                },
+                function () {
+                    console.warn('WebSocket connection closed');
+                },
+                {'skipSubprotocolCheck': true}
+            );
+        });
+    </script>
+@elseif($source == 'polling')
+    <div>THIS IS POLLING</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("HERE");
+
+            let interval;
+            interval = setInterval(() => {
+                fetch('/polling/progress')
+                    .then(response => response.json())
+                    .then(data => {
+                        let completed = document.querySelector('.amount-complete');
+                        completed.style.width = `${data.progress}%`;
+
+                        console.log(data);
+
+                        if (data.progress == 100) {
+                            clearInterval(interval);
+                        }
+                    });
+            }, 200);
+        });
+    </script>
 @endif
