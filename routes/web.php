@@ -21,7 +21,7 @@ Route::prefix('/websockets')
     ->name('ws.')
     ->group(function () {
         Route::prefix('/ratchet')
-            ->name('ratchet')
+            ->name('ratchet.')
             ->group(function () {
 
                 Route::middleware('auth')->get('/upload', function () {
@@ -47,7 +47,7 @@ Route::middleware('auth')
         Route::get('/upload', function (\Illuminate\Http\Request $request) {
             $user = $request->user();
 
-            \App\Jobs\ServerSentEvents\ProcessUploadJob::dispatch($user);
+            \App\Jobs\Polling\ProcessUploadJob::dispatch($user);
 
             return view('polling.upload');
         })->name('upload');
@@ -68,7 +68,7 @@ Route::middleware('auth')
         Route::get('/upload', function (\Illuminate\Http\Request $request) {
             $user = $request->user();
 
-            \App\Jobs\ServerSentEvents\ProcessUploadJob::dispatch($user);
+            \App\Jobs\LongPolling\ProcessUploadJob::dispatch($user);
 
             return view('long-polling.upload');
         })->name('upload');
