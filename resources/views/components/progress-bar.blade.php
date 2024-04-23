@@ -31,12 +31,8 @@
         });
     </script>
 @elseif($source == 'polling')
-    <div>THIS IS POLLING</div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            console.log("HERE");
-
             let interval;
             interval = setInterval(() => {
                 fetch('/polling/progress')
@@ -52,6 +48,27 @@
                         }
                     });
             }, 200);
+        });
+    </script>
+
+@elseif($source == 'long-polling')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const poll = () => {
+                fetch('/long-polling/progress')
+                    .then(response => response.json())
+                    .then(data => {
+                        let completed = document.querySelector('.amount-complete');
+                        completed.style.width = `${data.progress}%`;
+
+                        console.log(data);
+
+                        if (data.progress != 100) {
+                            setTimeout(poll, 0);
+                        }
+                    });
+            }
+            setTimeout(poll, 0);
         });
     </script>
 @endif

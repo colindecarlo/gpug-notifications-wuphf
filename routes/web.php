@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -48,7 +47,7 @@ Route::middleware('auth')
         Route::get('/upload', function (\Illuminate\Http\Request $request) {
             $user = $request->user();
 
-            \App\Jobs\Polling\ProcessUploadJob::dispatch($user);
+            \App\Jobs\LongPolling\ProcessUploadJob::dispatch($user);
 
             return view('polling.upload');
         })->name('upload');
@@ -59,6 +58,38 @@ Route::middleware('auth')
             return response()->json([
                 'progress' => $progress
             ]);
+        })->name('progress');
+    });
+
+Route::middleware('auth')
+    ->prefix('/long-polling')
+    ->name('polling.')
+    ->group(function () {
+        Route::get('/upload', function (\Illuminate\Http\Request $request) {
+            $user = $request->user();
+
+            \App\Jobs\LongPolling\ProcessUploadJob::dispatch($user);
+
+            return view('long-polling.upload');
+        })->name('upload');
+
+        Route::get('/progress', function (\Illuminate\Http\Request $request) {
+            $lastProgress = \Illuminate\Support\Facades\Cache::get('long-polling:last-progress:user:' . $request->user()->id, 0);
+
+            while (true) {
+                $progress = \Illuminate\Support\Facades\Cache::get('long-polling:progress-updates:user:' . $request->user()->id, $lastProgress);
+
+                \Illuminate\Support\Facades\Log::debug('Checking progress on upload for user ' . $request->user()->id . ': ' . $progress . '%' . ' (last progress: ' . $lastProgress . '%)');
+
+                if ($progress !== $lastProgress) {
+                    \Illuminate\Support\Facades\Cache::put('long-polling:last-progress:user:' . $request->user()->id, $progress);
+                    return response()->json([
+                        'progress' => $progress
+                    ]);
+                }
+
+                usleep(2000);
+            }
         })->name('progress');
     });
 
