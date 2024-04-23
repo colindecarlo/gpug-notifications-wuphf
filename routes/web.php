@@ -47,7 +47,7 @@ Route::middleware('auth')
         Route::get('/upload', function (\Illuminate\Http\Request $request) {
             $user = $request->user();
 
-            \App\Jobs\LongPolling\ProcessUploadJob::dispatch($user);
+            \App\Jobs\ServerSentEvents\ProcessUploadJob::dispatch($user);
 
             return view('polling.upload');
         })->name('upload');
@@ -63,12 +63,12 @@ Route::middleware('auth')
 
 Route::middleware('auth')
     ->prefix('/long-polling')
-    ->name('polling.')
+    ->name('long-polling.')
     ->group(function () {
         Route::get('/upload', function (\Illuminate\Http\Request $request) {
             $user = $request->user();
 
-            \App\Jobs\LongPolling\ProcessUploadJob::dispatch($user);
+            \App\Jobs\ServerSentEvents\ProcessUploadJob::dispatch($user);
 
             return view('long-polling.upload');
         })->name('upload');
@@ -92,6 +92,54 @@ Route::middleware('auth')
             }
         })->name('progress');
     });
+
+Route::middleware('auth')
+    ->prefix('/server-sent-events')
+    ->name('sse.')
+    ->group(function () {
+        Route::get('/upload', function (\Illuminate\Http\Request $request) {
+            $user = $request->user();
+
+            \App\Jobs\ServerSentEvents\ProcessUploadJob::dispatch($user);
+
+            return view('sse.upload');
+        })->name('upload');
+
+        Route::get('/progress', function (\Illuminate\Http\Request $request) {
+            return response()->stream(function () use ($request) {
+                $lastProgress = \Illuminate\Support\Facades\Cache::get('sse:last-progress:user:' . $request->user()->id, 0);
+
+                while (true) {
+//                    echo "event: ping\n";
+
+                    $progress = \Illuminate\Support\Facades\Cache::get('sse:progress-updates:user:' . $request->user()->id, $lastProgress);
+
+                    if ($progress !== $lastProgress) {
+                        \Illuminate\Support\Facades\Cache::put('sse:last-progress:user:' . $request->user()->id, $progress);
+                        echo "data: " . json_encode(['progress' => $progress]) . "\n\n";
+                    }
+
+                    ob_flush();
+                    flush();
+
+                    if (connection_aborted()) {
+                        break;
+                    }
+
+                    usleep(250_000);
+                }
+            }, 200, [
+                'Cache-Control' => 'no-cache',
+                'Content-Type' => 'text/event-stream',
+                'X-Accel-Buffering' => 'no'
+            ]);
+
+        })->name('progress');
+    });
+
+Route::get('info', function () {
+    phpinfo();
+})->name('info');
 
 
 require __DIR__ . '/auth.php';

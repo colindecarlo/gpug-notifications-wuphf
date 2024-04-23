@@ -50,7 +50,6 @@
             }, 200);
         });
     </script>
-
 @elseif($source == 'long-polling')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -69,6 +68,31 @@
                     });
             }
             setTimeout(poll, 0);
+        });
+    </script>
+
+@elseif($source == 'sse')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // const eventSource = new EventSource('/sse.php');
+
+            const eventSource = new EventSource('/server-sent-events/progress');
+            eventSource.onopen = function () {
+               console.log("Connection to server opened.")
+            }
+
+            eventSource.onerror = function() {
+                console.log("EventSource failed.");
+            };
+
+            eventSource.onmessage = function (event) {
+                console.log(`Message: ${event.data}`);
+
+                const data = JSON.parse(event.data);
+
+                let completed = document.querySelector('.amount-complete');
+                completed.style.width = `${data.progress}%`;
+            }
         });
     </script>
 @endif
