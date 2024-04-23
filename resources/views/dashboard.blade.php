@@ -24,6 +24,11 @@
                     </a>
                 </li>
                 <li class="text-slate-700 text-2xl font-medium py-6">
+                    <a href="{{route('sse.wave.upload') }}" class="hover:text-slate-900">
+                        {{ __('Server Sent Events - Laravel Wave') }}
+                    </a>
+                </li>
+                <li class="text-slate-700 text-2xl font-medium py-6">
                     <a href="{{route('ws.ratchet.upload') }}" class="hover:text-slate-900">
                         {{ __('Web Sockets - No Package') }}
                     </a>

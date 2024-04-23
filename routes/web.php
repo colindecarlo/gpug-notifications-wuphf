@@ -135,6 +135,22 @@ Route::middleware('auth')
             ]);
 
         })->name('progress');
+
+
+        Route::prefix('/wave')
+            ->name('wave.')
+            ->group(function () {
+
+                Route::get('/upload', function (\Illuminate\Http\Request $request) {
+                    $user = $request->user();
+
+                    \App\Jobs\ServerSentEvents\Wave\ProcessUploadJob::dispatch($user);
+
+                    return view('sse.wave.upload');
+                })->name('upload');
+
+
+            });
     });
 
 Route::get('info', function () {
