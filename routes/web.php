@@ -88,7 +88,7 @@ Route::middleware('auth')
                     ]);
                 }
 
-                usleep(2000);
+                usleep(200_000);
             }
         })->name('progress');
     });
