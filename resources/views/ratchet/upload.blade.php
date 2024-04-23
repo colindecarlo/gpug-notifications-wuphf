@@ -7,7 +7,31 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <x-progress-bar source="ws-ratchet"></x-progress-bar>
+            <x-progress-bar>
+
+                <script>
+                  document.addEventListener('DOMContentLoaded', function () {
+                    const conn = new window.ab.Session('ws://localhost:8080',
+                      function () {
+                        conn.subscribe('progress-updates:user:{{ Auth::user()->id }}', function (topic, data) {
+                          let completed = document.querySelector('.amount-complete');
+                          completed.style.width = `${data.progress}%`;
+
+                          console.log({
+                            topic: topic,
+                            data: data
+                          });
+                        });
+                      },
+                      function () {
+                        console.warn('WebSocket connection closed');
+                      },
+                      {'skipSubprotocolCheck': true}
+                    );
+                  });
+                </script>
+
+            </x-progress-bar>
         </div>
     </div>
 </x-app-layout>
