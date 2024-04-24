@@ -26,5 +26,7 @@ class ProcessUploadJob implements ShouldQueue
             sleep(1);
             $progress += 10;
         }
+
+        $this->user->notify(new \App\Notifications\UploadCompleteNotification());
     }
 }

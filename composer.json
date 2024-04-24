@@ -10,6 +10,7 @@
     "require": {
         "php": "^8.2",
         "ext-zmq": "*",
+        "laravel-notification-channels/twilio": "^3.4",
         "laravel/framework": "^11.0",
         "laravel/reverb": "@beta",
         "laravel/tinker": "^2.9"
