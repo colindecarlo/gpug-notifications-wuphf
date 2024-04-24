@@ -19,7 +19,7 @@
                     </a>
                 </li>
                 <li class="text-slate-700 text-2xl font-medium py-6">
-                    <a href="{{route('sse.upload') }}" class="hover:text-slate-900">
+                    <a href="{{route('sse.index') }}" class="hover:text-slate-900">
                         {{ __('Server Sent Events - No Package') }}
                     </a>
                 </li>

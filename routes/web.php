@@ -3,6 +3,7 @@
 use App\Http\Controllers\Polling\LongPollingController;
 use App\Http\Controllers\Polling\PollingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Sse\RawController;
 use App\Http\Controllers\WebSockets\RatchetController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,49 +55,9 @@ Route::middleware('auth')
     ->prefix('/server-sent-events')
     ->name('sse.')
     ->group(function () {
-        Route::get('/upload', function (\Illuminate\Http\Request $request) {
-            $user = $request->user();
-
-            \App\Jobs\ServerSentEvents\ProcessUploadJob::dispatch($user);
-
-            return view('sse.upload');
-        })->name('upload');
-
-        Route::get('/progress', function (\Illuminate\Http\Request $request) {
-            return response()->stream(function () use ($request) {
-                $lastProgress = \Illuminate\Support\Facades\Cache::get('sse:last-progress:user:' . $request->user()->id, 0);
-
-                while (true) {
-//                    echo "event: ping\n";
-
-                    $progress = \Illuminate\Support\Facades\Cache::get('sse:progress-updates:user:' . $request->user()->id, $lastProgress);
-
-                    if ($progress !== $lastProgress) {
-                        \Illuminate\Support\Facades\Cache::put('sse:last-progress:user:' . $request->user()->id, $progress);
-                        echo "data: " . json_encode(['progress' => $progress]) . "\n\n";
-                    }
-
-                    ob_flush();
-                    flush();
-
-                    if (connection_aborted()) {
-                        break;
-                    }
-
-                    usleep(250_000);
-                }
-            }, 200, [
-                'Cache-Control' => 'no-cache',
-                'Content-Type' => 'text/event-stream',
-                'X-Accel-Buffering' => 'no'
-            ]);
-
-        })->name('progress');
+        Route::get('/', [RawController::class, 'index'])->name('index');
+        Route::get('/upload', [RawController::class, 'upload'])->name('upload');
+        Route::get('/progress', [RawController::class, 'progress'])->name('progress');
     });
-
-Route::get('info', function () {
-    phpinfo();
-})->name('info');
-
 
 require __DIR__ . '/auth.php';
