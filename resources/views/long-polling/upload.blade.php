@@ -7,12 +7,12 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <x-progress-bar>
+            <x-progress-bar route="{{ route('long-polling.upload') }}">
 
                 <script>
                   document.addEventListener('DOMContentLoaded', function () {
                     const poll = () => {
-                      fetch('/long-polling/progress')
+                      fetch('{{ route('long-polling.progress') }}')
                         .then(response => response.json())
                         .then(data => {
                           let completed = document.querySelector('.amount-complete');

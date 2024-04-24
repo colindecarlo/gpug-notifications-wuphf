@@ -7,13 +7,12 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <x-progress-bar>
+            <x-progress-bar route="{{ route('sse.upload') }}">
 
                 <script>
                   document.addEventListener('DOMContentLoaded', function () {
-                    // const eventSource = new EventSource('/sse.php');
 
-                    const eventSource = new EventSource('/server-sent-events/progress');
+                    const eventSource = new EventSource('{{ route('sse.progress') }}');
                     eventSource.onopen = function () {
                       console.log("Connection to server opened.")
                     }
