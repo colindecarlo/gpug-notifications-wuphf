@@ -4,6 +4,7 @@ use App\Http\Controllers\Polling\LongPollingController;
 use App\Http\Controllers\Polling\PollingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Sse\RawController;
+use App\Http\Controllers\Sse\WaveController;
 use App\Http\Controllers\WebSockets\RatchetController;
 use Illuminate\Support\Facades\Route;
 
@@ -62,19 +63,11 @@ Route::prefix('/websockets')
             });
     });
 
-Route::prefix('/wave')
+Route::prefix('/sse/wave')
     ->name('sse.wave.')
     ->group(function () {
-
-        Route::get('/upload', function (\Illuminate\Http\Request $request) {
-            $user = $request->user();
-
-            \App\Jobs\ServerSentEvents\Wave\ProcessUploadJob::dispatch($user);
-
-            return view('sse.wave.upload');
-        })->name('upload');
-
-
+        Route::get('/', [WaveController::class, 'index'])->name('index');
+        Route::get('/upload', [WaveController::class, 'upload'])->name('upload');
     });
 
 require __DIR__ . '/auth.php';
