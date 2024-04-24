@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <ul class="">
                 <li class="text-slate-700 text-2xl font-medium py-6">
-                    <a href="{{route('polling.upload') }}" class="hover:text-slate-900">
+                    <a href="{{route('polling.index') }}" class="hover:text-slate-900">
                         {{ __('Polling') }}
                     </a>
                 </li>

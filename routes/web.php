@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Polling\PollingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WebSockets\RatchetController;
 use Illuminate\Support\Facades\Route;
@@ -34,21 +35,9 @@ Route::middleware('auth')
     ->prefix('/polling')
     ->name('polling.')
     ->group(function () {
-        Route::get('/upload', function (\Illuminate\Http\Request $request) {
-            $user = $request->user();
-
-            \App\Jobs\Polling\ProcessUploadJob::dispatch($user);
-
-            return view('polling.upload');
-        })->name('upload');
-
-        Route::get('/progress', function (\Illuminate\Http\Request $request) {
-            $progress = \Illuminate\Support\Facades\Cache::get('polling:progress-updates:user:' . $request->user()->id, 0);
-
-            return response()->json([
-                'progress' => $progress
-            ]);
-        })->name('progress');
+        Route::get('/', [PollingController::class, 'index'])->name('index');
+        Route::get('/upload', [PollingController::class, 'upload'])->name('upload');
+        Route::get('/progress', [PollingController::class, 'progress'])->name('progress');
     });
 
 Route::middleware('auth')
