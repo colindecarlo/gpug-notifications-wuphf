@@ -68,19 +68,7 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('polling.upload')" :active="request()->routeIs('polling.upload')">
-                {{ __('Polling') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('long-polling.upload')" :active="request()->routeIs('long-polling.upload')">
-                {{ __('Loooong Polling') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('sse.upload')" :active="request()->routeIs('sse.upload')">
-                {{ __('Server Sent Events - No Package') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('ws.ratchet.upload')" :active="request()->routeIs('ws.ratchet.upload.upload')">
-                {{ __('Web Sockets - No Package') }}
+                {{ __('Demos') }}
             </x-responsive-nav-link>
         </div>
 
