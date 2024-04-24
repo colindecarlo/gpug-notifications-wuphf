@@ -14,7 +14,7 @@
                     </a>
                 </li>
                 <li class="text-slate-700 text-2xl font-medium py-6">
-                    <a href="{{route('long-polling.upload') }}" class="hover:text-slate-900">
+                    <a href="{{route('long-polling.index') }}" class="hover:text-slate-900">
                         {{ __('Loooong Polling') }}
                     </a>
                 </li>
