@@ -46,13 +46,13 @@ class User extends Authenticatable
         ];
     }
 
-    public function routeNotificationForTwilio()
-    {
-        return '+15193625860';
-    }
+//    public function routeNotificationForTwilio()
+//    {
+//        return '+15193625860';
+//    }
 
-    public function routeNotificationForSlack(Notification $notification): mixed
-    {
-        return '@colin';
-    }
+//    public function routeNotificationForSlack(Notification $notification): mixed
+//    {
+//        return '@colin';
+//    }
 }

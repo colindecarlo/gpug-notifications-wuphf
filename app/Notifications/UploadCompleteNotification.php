@@ -20,20 +20,22 @@ class UploadCompleteNotification extends Notification implements ShouldQueue
 
     public function via($notifiable): array
     {
-        return [TwilioChannel::class, 'slack'];
+        return [];
+//        return [TwilioChannel::class];
+//        return [TwilioChannel::class, 'slack'];
     }
 
-    public function toTwilio($notifiable)
-    {
-        return (new TwilioSmsMessage())
-            ->content("Your upload is complete!");
-    }
+//    public function toTwilio($notifiable)
+//    {
+//        return (new TwilioSmsMessage())
+//            ->content("Your upload is complete!");
+//    }
 
-    public function toSlack($notifiable): SlackMessage
-    {
-        return (new SlackMessage)
-            ->text("Your upload is complete!");
-    }
+//    public function toSlack($notifiable): SlackMessage
+//    {
+//        return (new SlackMessage)
+//            ->text("Your upload is complete!");
+//    }
 
     public function toArray($notifiable): array
     {
