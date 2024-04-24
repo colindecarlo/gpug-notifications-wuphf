@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WebSockets\RatchetController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -20,23 +21,12 @@ Route::middleware('auth')->group(function () {
 Route::prefix('/websockets')
     ->name('ws.')
     ->group(function () {
-        Route::prefix('/ratchet')
+        Route::middleware('auth')
+            ->prefix('/ratchet')
             ->name('ratchet.')
             ->group(function () {
-
-                Route::middleware('auth')->get('/upload', function () {
-                    return view('ratchet.upload');
-                })->name('upload');
-
-                Route::get('/progress', function (\Illuminate\Http\Request $request) {
-                    $user = \App\Models\User::where('email', $request->input('email'))->first();
-
-                    abort_if(!$user, Illuminate\Http\Response::HTTP_BAD_REQUEST);
-
-                    \App\Jobs\WebSockets\Ratchet\ProcessUploadJob::dispatch($user);
-
-                    return "Progress updated";
-                })->name('progress');
+                Route::get('/', [RatchetController::class, 'index'])->name('index');
+                Route::get('/upload', [RatchetController::class, 'upload'])->name('upload');
             });
     });
 
