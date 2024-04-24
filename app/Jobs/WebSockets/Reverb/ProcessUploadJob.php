@@ -4,6 +4,7 @@ namespace App\Jobs\WebSockets\Reverb;
 
 use App\Events\UploadProgressEvent;
 use App\Models\User;
+use App\Notifications\UploadCompleteNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -27,6 +28,6 @@ class ProcessUploadJob implements ShouldQueue
             $progress += 10;
         }
 
-        $this->user->notify(new \App\Notifications\UploadCompleteNotification());
+        $this->user->notify(new UploadCompleteNotification());
     }
 }

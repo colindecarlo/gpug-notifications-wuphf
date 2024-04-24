@@ -29,7 +29,7 @@
                     </a>
                 </li>
                 <li class="text-slate-700 text-2xl font-medium py-6">
-                    <a href="{{route('ws.reverb.upload') }}" class="hover:text-slate-900">
+                    <a href="{{route('ws.reverb.index') }}" class="hover:text-slate-900">
                         {{ __('Web Sockets - Reverb') }}
                     </a>
                 </li>

@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <x-progress-bar>
+            <x-progress-bar route="{{ route('ws.reverb.upload') }}">
 
                 <script>
                   document.addEventListener('DOMContentLoaded', function () {

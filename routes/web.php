@@ -5,6 +5,7 @@ use App\Http\Controllers\Polling\PollingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Sse\RawController;
 use App\Http\Controllers\WebSockets\RatchetController;
+use App\Http\Controllers\WebSockets\ReverbController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -65,10 +66,8 @@ Route::prefix('/websockets')
             ->prefix('/reverb')
             ->name('reverb.')
             ->group(function () {
-                Route::get('/upload', function (\Illuminate\Http\Request $request) {
-                    \App\Jobs\WebSockets\Reverb\ProcessUploadJob::dispatch($request->user());
-                    return view('ws.reverb.upload');
-                })->name('upload');
+                Route::get('/', [ReverbController::class, 'index'])->name('index');
+                Route::get('/upload', [ReverbController::class, 'upload'])->name('upload');
             });
     });
 
