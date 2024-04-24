@@ -38,6 +38,16 @@ Route::prefix('/websockets')
                     return "Progress updated";
                 })->name('progress');
             });
+
+        Route::middleware('auth')
+            ->prefix('/reverb')
+            ->name('reverb.')
+            ->group(function () {
+                Route::get('/upload', function (\Illuminate\Http\Request $request) {
+                    \App\Jobs\WebSockets\Reverb\ProcessUploadJob::dispatch($request->user());
+                    return view('ws.reverb.upload');
+                })->name('upload');
+            });
     });
 
 Route::middleware('auth')
