@@ -21,17 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::prefix('/websockets')
-    ->name('ws.')
-    ->group(function () {
-        Route::middleware('auth')
-            ->prefix('/ratchet')
-            ->name('ratchet.')
-            ->group(function () {
-                Route::get('/', [RatchetController::class, 'index'])->name('index');
-                Route::get('/upload', [RatchetController::class, 'upload'])->name('upload');
-            });
-    });
+
 
 Route::middleware('auth')
     ->prefix('/polling')
@@ -58,6 +48,18 @@ Route::middleware('auth')
         Route::get('/', [RawController::class, 'index'])->name('index');
         Route::get('/upload', [RawController::class, 'upload'])->name('upload');
         Route::get('/progress', [RawController::class, 'progress'])->name('progress');
+    });
+
+Route::prefix('/websockets')
+    ->name('ws.')
+    ->group(function () {
+        Route::middleware('auth')
+            ->prefix('/ratchet')
+            ->name('ratchet.')
+            ->group(function () {
+                Route::get('/', [RatchetController::class, 'index'])->name('index');
+                Route::get('/upload', [RatchetController::class, 'upload'])->name('upload');
+            });
     });
 
 require __DIR__ . '/auth.php';
