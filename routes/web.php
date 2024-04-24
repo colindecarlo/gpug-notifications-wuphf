@@ -20,11 +20,14 @@ Route::middleware('auth')->group(function () {
 Route::prefix('/websockets')
     ->name('ws.')
     ->group(function () {
-        Route::prefix('/ratchet')
+        Route::middleware('auth')
+            ->prefix('/ratchet')
             ->name('ratchet.')
             ->group(function () {
 
-                Route::middleware('auth')->get('/upload', function () {
+                Route::get('/upload', function (\Illuminate\Http\Request $request) {
+                    \App\Jobs\WebSockets\Ratchet\ProcessUploadJob::dispatch($request->user());
+
                     return view('ratchet.upload');
                 })->name('upload');
 
